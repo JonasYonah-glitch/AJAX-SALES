@@ -62,6 +62,7 @@ export function HowItWorks() {
             const stepSize = 1 / total
             const cardStart = index * stepSize
             const cardEnd = (index + 1) * stepSize
+            const hasNextStep = index < total - 1
 
             // Definimos que o card chega em 30% do seu tempo e trava nos outros 70%
             const arrivalEnd = cardStart + stepSize * 0.4 
@@ -75,22 +76,22 @@ export function HowItWorks() {
             )
 
             // O card começa a sumir apenas quando o PRÓXIMO atingir 20% da sua jornada de chegada
-            const nextStepStart = cardEnd
-            const nextStepArrival = cardEnd + stepSize * 0.2
+            const exitStart = hasNextStep ? cardEnd : Math.max(cardStart, 1 - stepSize * 0.2)
+            const exitEnd = hasNextStep ? Math.min(cardEnd + stepSize * 0.2, 1) : 1
 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const scale = useTransform(
               scrollYProgress,
-              [nextStepStart, nextStepArrival],
-              [1, 0.9],
+              [exitStart, exitEnd],
+              [1, hasNextStep ? 0.9 : 1],
               { clamp: true }
             )
 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const opacity = useTransform(
               scrollYProgress,
-              [nextStepStart, nextStepArrival],
-              [1, 0],
+              [exitStart, exitEnd],
+              [1, hasNextStep ? 0 : 1],
               { clamp: true }
             )
 
