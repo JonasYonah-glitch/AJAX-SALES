@@ -1,10 +1,8 @@
 "use client"
 
 import { useRef } from "react"
-import { cn } from "@/lib/utils"
-import DotPattern from "@/components/ui/dot-pattern"
-import { Search, MessageSquare, TrendingUp, DollarSign } from "lucide-react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion"
+import { Search, Rocket, BarChart2, ShieldCheck, Repeat } from "lucide-react"
 
 const steps = [
   {
@@ -13,133 +11,125 @@ const steps = [
     description: "Analisamos sua base, seus canais e identificamos onde esta o dinheiro parado.",
   },
   {
-    icon: MessageSquare,
-    title: "Ativacao",
-    description: "Entramos em contato com leads que nao converteram, usando abordagem comercial direta.",
+    icon: Rocket,
+    title: "Implementacao",
+    description: "Configuramos toda a automacao e o time comercial dedicado em menos de 72h.",
   },
   {
-    icon: TrendingUp,
+    icon: BarChart2,
+    title: "Recuperacao",
+    description: "Entramos em acao para converter leads antigos e novos em vendas reais.",
+  },
+  {
+    icon: Repeat,
     title: "Follow-up",
     description: "Processo estruturado de acompanhamento ate o fechamento ou descarte qualificado.",
   },
-  {
-    icon: DollarSign,
-    title: "Resultado",
-    description: "Voce so paga quando a venda e concretizada. Sem resultado, sem custo.",
-  },
 ]
+
+interface StepCardProps {
+  step: typeof steps[0]
+  index: number
+  total: number
+  scrollYProgress: MotionValue<number>
+}
+
+function StepCard({ step, index, total, scrollYProgress }: StepCardProps) {
+  const stepSize = 1 / total
+  const cardStart = index * stepSize
+  const cardEnd = (index + 1) * stepSize
+
+  // Definimos que o card chega em 40% do seu tempo e trava nos outros 60%
+  const arrivalEnd = cardStart + stepSize * 0.4 
+  
+  const y = useTransform(
+    scrollYProgress,
+    [cardStart, arrivalEnd],
+    [index === 0 ? "0vh" : "120vh", "0vh"],
+    { clamp: true }
+  )
+
+  // O card começa a sumir apenas quando o PRÓXIMO atingir 20% da sua jornada de chegada
+  const nextStepStart = cardEnd
+  const nextStepArrival = cardEnd + stepSize * 0.2
+
+  const scale = useTransform(
+    scrollYProgress,
+    [nextStepStart, nextStepArrival],
+    [1, 0.9],
+    { clamp: true }
+  )
+
+  const opacity = useTransform(
+    scrollYProgress,
+    [nextStepStart, nextStepArrival],
+    [1, 0],
+    { clamp: true }
+  )
+
+  return (
+    <motion.div
+      style={{ y, scale, opacity, zIndex: index }}
+      className="absolute inset-0 flex items-center justify-center p-4"
+    >
+      <div className="relative p-8 md:p-12 min-h-[220px] rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full max-w-2xl group transition-all duration-500 hover:bg-white/10">
+        {/* Step Number Background */}
+        <div className="absolute right-6 top-6 text-7xl md:text-9xl font-sans font-black text-white/[0.03] select-none">
+          {index + 1 < 10 ? `0${index + 1}` : index + 1}
+        </div>
+        
+        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]">
+          <step.icon className="w-8 h-8 md:w-10 md:h-10 text-gray-200" />
+        </div>
+        
+        <div className="relative z-10 text-center md:text-left">
+          <h3 className="text-2xl md:text-4xl font-sans font-bold text-white mb-2 md:mb-4 tracking-tight">
+            {step.title}
+          </h3>
+          <p className="text-gray-400 font-sans font-normal text-sm md:text-xl leading-relaxed max-w-sm">
+            {step.description}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
 
 export function HowItWorks() {
   const containerRef = useRef<HTMLDivElement>(null)
   
-  // Rastreio nativo do Viewport para prender a rolagem
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   })
 
-  const total = steps.length
-
   return (
-    // Ampliamos a div pai para 400vh. Isso obriga o scroll a atravessar esse túnel.
     <div ref={containerRef} className="relative h-[400vh] w-full bg-transparent">
-      
-      {/* O container interno fica "colado" na tela enquanto rolamos o pai */}
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-start pt-24 md:pt-32 px-4 overflow-hidden">
         
-        <div className="text-center mb-8 md:mb-16 relative z-50">
-          <p className="text-sm uppercase tracking-widest text-gray-400 font-sans font-medium mb-3">
-            Simples e direto
+        <div className="text-center mb-8 md:mb-12 relative z-10">
+          <p className="text-sm uppercase tracking-[0.3em] text-gray-500 font-sans font-medium mb-2 md:mb-4">
+            Simples e Direto
           </p>
-          <h2 className="text-4xl md:text-6xl lg:text-8xl font-sans font-bold text-white [text-shadow:_0_4px_25px_rgb(0_0_0_/_80%)] tracking-tight">
+          <h2 className="text-4xl md:text-7xl font-sans font-black text-white tracking-tighter">
             Como funciona
           </h2>
         </div>
 
         <div className="relative w-full max-w-3xl h-[400px]">
-          {steps.map((step, index) => {
-            // Dividimos o scroll total em fatias para cada card
-            const stepSize = 1 / total
-            const cardStart = index * stepSize
-            const cardEnd = (index + 1) * stepSize
-
-            // Definimos que o card chega em 30% do seu tempo e trava nos outros 70%
-            const arrivalEnd = cardStart + stepSize * 0.4 
-            
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const y = useTransform(
-              scrollYProgress,
-              [cardStart, arrivalEnd],
-              [index === 0 ? "0vh" : "120vh", "0vh"],
-              { clamp: true }
-            )
-
-            // O card começa a sumir apenas quando o PRÓXIMO atingir 20% da sua jornada de chegada
-            const nextStepStart = cardEnd
-            const nextStepArrival = cardEnd + stepSize * 0.2
-
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const scale = useTransform(
-              scrollYProgress,
-              [nextStepStart, nextStepArrival],
-              [1, 0.9],
-              { clamp: true }
-            )
-
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const opacity = useTransform(
-              scrollYProgress,
-              [nextStepStart, nextStepArrival],
-              [1, 0],
-              { clamp: true }
-            )
-
-            return (
-              <motion.div
-                key={index}
-                style={{ 
-                  y, 
-                  scale, 
-                  opacity,
-                  zIndex: index, // Garante sobreposição exata
-                  // Cascata visual para ver a borda dos antigos cards no topo
-                  top: `calc(${index * 12}px)`
-                }}
-                className="absolute left-0 right-0 w-full origin-top"
-              >
-                <div className="relative p-8 md:p-12 min-h-[220px] rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden transition-all">
-                  <DotPattern width={8} height={8} className="opacity-10" />
-                  
-                  {/* Marcação D'água Gigante */}
-                  <div className="absolute -top-4 -right-2 text-8xl md:text-[140px] font-black text-white/[0.03] font-sans leading-none select-none">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-
-                  <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]">
-                      <step.icon className="w-8 h-8 md:w-10 md:h-10 text-gray-200" />
-                    </div>
-                    
-                    <div className="flex-1">
-                      <h3 className="text-2xl md:text-4xl font-sans font-bold text-white mb-3 tracking-tight [text-shadow:_0_2px_15px_rgb(0_0_0_/_50%)]">
-                        {step.title}
-                      </h3>
-                      
-                      <p className="text-gray-400 font-sans font-normal text-base md:text-xl leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )
-          })}
+          {steps.map((step, index) => (
+            <StepCard 
+              key={index} 
+              step={step} 
+              index={index} 
+              total={steps.length} 
+              scrollYProgress={scrollYProgress} 
+            />
+          ))}
         </div>
 
-        {/* Quadro de Garantia Final - Centralizado após todos os cards subirem */}
         <motion.div 
           className="absolute inset-0 flex items-center justify-center z-50 w-full px-4 text-center pointer-events-none"
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           style={{
             opacity: useTransform(scrollYProgress, [0.93, 0.98], [0, 1], { clamp: true }),
             scale: useTransform(scrollYProgress, [0.93, 0.98], [0.8, 1], { clamp: true }),
