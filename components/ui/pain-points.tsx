@@ -47,18 +47,18 @@ export function PainPointsStack() {
   )
 
   return (
-    // Transformamos de 400vh em 600vh (para preencher uma experiência demorada e confortável de 5 trocas)
-    <div ref={containerRef} className="relative h-[600vh] w-full bg-transparent">
+    // Transformamos em 500vh para uma experiência confortável de 6 trocas
+    <div ref={containerRef} className="relative h-[500vh] w-full bg-transparent">
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center px-4 overflow-hidden">
         
         <div className="text-center mb-16 relative z-50">
-          <h2 className="text-4xl md:text-6xl lg:text-8xl font-sans font-bold text-white [text-shadow:_0_4px_25px_rgb(0_0_0_/_80%)] mb-6 tracking-tight">
+          <h2 className="text-3xl md:text-6xl lg:text-7xl font-sans font-bold text-white [text-shadow:_0_4px_25px_rgb(0_0_0_/_80%)] mb-6 tracking-tight">
             Você se identifica?
           </h2>
         </div>
 
         {/* Card Pai - Componente Dinâmico Fixo sem fogo */}
-        <div className="relative w-full max-w-3xl min-h-[180px] p-8 md:p-12 rounded-2xl backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-start overflow-hidden">
+        <div className="relative w-full max-w-3xl min-h-[180px] p-8 md:p-12 rounded-2xl backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-start overflow-hidden text-balance">
           
           <div className="flex items-center gap-6 z-10 w-full relative">
             <div className="w-3 h-3 rounded-full bg-red-400 flex-shrink-0 animate-pulse shadow-[0_0_10px_rgba(255,0,0,0.8)]" />
@@ -74,18 +74,6 @@ export function PainPointsStack() {
             </motion.p>
           </div>
         </div>
-
-        <motion.div 
-          className="absolute bottom-16 md:bottom-24 text-center z-50 w-full px-4"
-          style={{ opacity: finalOpacity, y: finalY }}
-        >
-          <p className="text-3xl md:text-5xl lg:text-6xl text-white font-sans font-light leading-tight [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)]">
-            Se você marcou mais de 2,<br />
-            <span className="inline-block mt-1 md:mt-3 font-serif italic text-red-500 font-medium tracking-wide [text-shadow:_0_0_30px_rgba(255,0,0,0.8)]">
-              tá deixando dinheiro na mesa.
-            </span>
-          </p>
-        </motion.div>
 
       </div>
     </div>

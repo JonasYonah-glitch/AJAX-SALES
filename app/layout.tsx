@@ -46,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className="dark bg-background">
+    <html lang="pt-BR" className="bg-background">
       <body className={`font-sans ${openSans.variable} ${rubik.variable} ${instrumentSerif.variable}`}>
         <Suspense fallback={null}>
           {children}

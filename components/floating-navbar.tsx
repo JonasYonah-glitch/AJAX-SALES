@@ -14,14 +14,12 @@ export function FloatingNavbar() {
       <div className="mx-auto max-w-7xl rounded-2xl border-2 border-white/10 bg-white/5 px-6 py-4 backdrop-blur-sm">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <button onClick={() => scrollToSection("home")} className="cursor-pointer group">
-            <div className="flex items-center transition-transform hover:scale-105">
-              <img 
-                src="/images/ajax sales branca.svg" 
-                alt="AJAX SALES" 
-                className="h-8 md:h-10 w-auto" 
-              />
-            </div>
+          <button onClick={() => scrollToSection("home")} className="cursor-pointer">
+            <img 
+              src="/images/ajax sales branca.svg" 
+              alt="Ajax Sales Logo" 
+              className="h-6 md:h-10 w-auto brightness-100"
+            />
           </button>
 
           {/* Navigation Links */}
@@ -53,13 +51,14 @@ export function FloatingNavbar() {
           </div>
 
           {/* CTA Button */}
-          <Button
-            size="sm"
-            className="bg-white text-black hover:bg-gray-100 font-sans font-bold shadow-sm"
-            onClick={() => scrollToSection("contato")}
-          >
-            Agendar Conversa
-          </Button>
+          <a href={`https://wa.me/5548991900150?text=${encodeURIComponent("Olá! Vim pelo site da AJAX Sales e gostaria de agendar uma avaliação gratuita para recuperar minhas vendas.")}`} target="_blank" rel="noopener noreferrer">
+            <Button
+              size="sm"
+              className="bg-white text-black hover:bg-gray-100 font-sans font-bold shadow-sm"
+            >
+              Agendar Conversa
+            </Button>
+          </a>
         </div>
       </div>
     </nav>

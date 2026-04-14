@@ -28,7 +28,7 @@ export function ContactCard({
   return (
     <div
       className={cn(
-        "relative grid h-full w-full border-2 border-white/10 bg-white/5 backdrop-blur-sm shadow-lg md:grid-cols-2 lg:grid-cols-3 rounded-lg",
+        "relative grid h-full w-full border border-white/10 bg-white/5 backdrop-blur-md shadow-lg md:grid-cols-2 lg:grid-cols-3 rounded-3xl",
         className,
       )}
       {...props}
@@ -40,10 +40,10 @@ export function ContactCard({
       <PlusIcon className="absolute -right-3 -bottom-3 h-6 w-6 text-white [text-shadow:_0_2px_8px_rgb(0_0_0_/_60%)]" />
       <div className="flex flex-col justify-between lg:col-span-2">
         <div className="relative h-full space-y-4 px-4 py-8 md:p-8">
-          <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)] font-open-sans-custom">
+          <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)] font-sans">
             {title}
-          </h1>
-          <p className="max-w-xl text-sm md:text-base lg:text-lg text-gray-300 [text-shadow:_0_2px_10px_rgb(0_0_0_/_50%)] font-open-sans-custom">
+          </h2>
+          <p className="max-w-xl text-sm md:text-base lg:text-lg text-gray-400 [text-shadow:_0_2px_10px_rgb(0_0_0_/_50%)] font-sans">
             {description}
           </p>
           <div className="grid gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export function ContactCard({
       </div>
       <div
         className={cn(
-          "flex h-full w-full items-center border-t border-white/10 bg-white/10 p-5 md:col-span-1 md:border-t-0 md:border-l",
+          "flex h-full w-full items-center border-t border-white/10 bg-white/5 p-5 md:col-span-1 md:border-t-0 md:border-l",
           formSectionClassName,
         )}
       >
@@ -72,10 +72,10 @@ function ContactInfo({ icon: Icon, label, value, className, ...props }: ContactI
         <Icon className="h-5 w-5 text-white" />
       </div>
       <div>
-        <p className="font-medium text-white [text-shadow:_0_2px_8px_rgb(0_0_0_/_40%)] font-open-sans-custom">
+        <p className="font-medium text-white [text-shadow:_0_2px_8px_rgb(0_0_0_/_40%)] font-sans">
           {label}
         </p>
-        <p className="text-xs text-gray-300 [text-shadow:_0_2px_6px_rgb(0_0_0_/_40%)] font-open-sans-custom">{value}</p>
+        <p className="text-xs text-gray-400 font-sans tracking-wide">{value}</p>
       </div>
     </div>
   )

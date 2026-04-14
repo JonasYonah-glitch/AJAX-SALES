@@ -64,18 +64,18 @@ export function InteractiveNeuralVortexBackground() {
         pointer.x *= u_ratio;
         float p = clamp(length(pointer), 0., 1.);
         p = .5 * pow(1. - p, 2.);
-        float t = .001 * u_time;
+        float t = .0004 * u_time;
         vec3 color = vec3(0.);
         float noise = neuro_shape(uv, t, p);
-        noise = 1.2 * pow(noise, 3.);
-        noise += pow(noise, 10.);
-        noise = max(.0, noise - .5);
-        noise *= (1. - length(vUv - .5));
+        noise = 1.0 * pow(noise, 3.5);
+        noise += pow(noise, 12.);
+        noise = max(.0, noise - .6);
+        noise *= (1. - length(vUv - .5) * 1.5);
         
         // Color palette tweaked for better contrast with Ajax Sales theme
-        color = vec3(0.5, 0.15, 0.65); // Purple base
-        color = mix(color, vec3(0.02, 0.7, 0.9), 0.32 + 0.16 * sin(2.0 * u_scroll_progress + 1.2)); // Blue/Cyan mix
-        color += vec3(0.15, 0.0, 0.6) * sin(2.0 * u_scroll_progress + 1.5); // Deep Indigo accents
+        color = vec3(0.4, 0.1, 0.55); // Purple base
+        color = mix(color, vec3(0.01, 0.5, 0.75), 0.3 + 0.1 * sin(1.2 * u_scroll_progress + 0.8)); // Blue/Cyan mix
+        color += vec3(0.1, 0.0, 0.45) * sin(1.5 * u_scroll_progress + 1.0); // Deep Indigo accents
         
         color = color * noise;
         gl_FragColor = vec4(color, noise);
@@ -147,8 +147,8 @@ export function InteractiveNeuralVortexBackground() {
       const currentTime = performance.now();
       
       // Smooth pointer movement
-      pointer.current.x += (pointer.current.tX - pointer.current.x) * 0.15;
-      pointer.current.y += (pointer.current.tY - pointer.current.y) * 0.15;
+      pointer.current.x += (pointer.current.tX - pointer.current.x) * 0.04;
+      pointer.current.y += (pointer.current.tY - pointer.current.y) * 0.04;
       
       gl.uniform1f(uTime, currentTime);
       gl.uniform2f(uPointerPosition, 
@@ -193,7 +193,7 @@ export function InteractiveNeuralVortexBackground() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 w-full h-full pointer-events-none opacity-90 z-[-10] bg-[#00042e]"
+      className="fixed inset-0 w-full h-full pointer-events-none opacity-90 z-0 bg-[#00042e]"
     />
   );
 }

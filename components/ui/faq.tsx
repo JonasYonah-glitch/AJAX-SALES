@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react"
 const faqs = [
   {
     question: "Quanto custa o servico?",
-    answer: "Voce so paga por resultado. Nao cobramos setup, mensalidade ou taxa fixa. Nosso modelo e baseado em comissao sobre vendas recuperadas. Se nao entrar dinheiro, voce nao paga nada.",
+    answer: "Voce so paga por resultado. Nosso modelo e baseado em comissao sobre vendas recuperadas. Se nao entrar dinheiro, voce nao paga nada.",
   },
   {
     question: "Funciona para qualquer tipo de negocio?",
@@ -41,10 +41,10 @@ export function FAQ({ isActive }: FAQProps) {
   return (
     <div className="w-full">
       <div className="text-center mb-12">
-        <p className="text-sm uppercase tracking-widest text-gray-400 font-open-sans-custom mb-4">
+        <p className="text-sm uppercase tracking-widest text-gray-400 font-sans font-bold mb-4">
           Duvidas frequentes
         </p>
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-open-sans-custom text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)]">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-sans font-bold text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)]">
           Perguntas e respostas
         </h2>
       </div>
@@ -63,7 +63,7 @@ export function FAQ({ isActive }: FAQProps) {
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
               className="w-full p-5 flex items-center justify-between text-left"
             >
-              <span className="text-white font-open-sans-custom pr-4">
+              <span className="text-white font-sans font-medium pr-4">
                 {faq.question}
               </span>
               <ChevronDown
@@ -80,7 +80,7 @@ export function FAQ({ isActive }: FAQProps) {
                 openIndex === index ? "max-h-48" : "max-h-0"
               )}
             >
-              <p className="px-5 pb-5 text-gray-400 font-open-sans-custom text-sm leading-relaxed">
+              <p className="px-5 pb-5 text-gray-400 font-sans font-normal text-sm md:text-base leading-relaxed">
                 {faq.answer}
               </p>
             </div>
@@ -96,12 +96,14 @@ export function FAQ({ isActive }: FAQProps) {
         )}
         style={{ transitionDelay: "600ms" }}
       >
-        <p className="text-lg text-gray-300 font-open-sans-custom mb-4">
+        <p className="text-lg text-gray-300 font-sans font-normal mb-4">
           Ainda tem duvidas? Vamos conversar.
         </p>
-        <p className="text-white font-open-sans-custom text-xl">
-          <span className="font-serif italic">Continue para agendar sua avaliacao gratuita</span> →
-        </p>
+        <a href={`https://wa.me/5548991900150?text=${encodeURIComponent("Olá! Li as dúvidas frequentes no site, mas ainda tenho algumas questões. Gostaria de agendar uma avaliação gratuita.")}`} target="_blank" rel="noopener noreferrer">
+          <p className="text-white font-sans text-xl hover:text-blue-400 transition-colors">
+            <span className="font-serif italic">Continue para agendar sua avaliacao gratuita</span> →
+          </p>
+        </a>
       </div>
     </div>
   )
