@@ -136,7 +136,7 @@ export function InteractiveNeuralVortexBackground() {
       canvasEl.width = window.innerWidth * devicePixelRatio;
       canvasEl.height = window.innerHeight * devicePixelRatio;
       gl.viewport(0, 0, canvasEl.width, canvasEl.height);
-      gl.uniform1f(uRatio, canvasEl.width / canvasEl.height);
+      gl.uniform1f(uRatio, canvasEl.width / (canvasEl.height || 1));
     };
 
     resizeCanvas();
@@ -178,11 +178,18 @@ export function InteractiveNeuralVortexBackground() {
     };
     window.addEventListener('touchmove', handleTouchMove);
 
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+    canvasEl.addEventListener('webglcontextlost', handleContextLost, false);
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('pointermove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
+      canvasEl.removeEventListener('webglcontextlost', handleContextLost);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
