@@ -1,9 +1,15 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { LightningBoltIcon, TargetIcon, CheckCircledIcon, ClockIcon, PersonIcon, CheckIcon } from "@radix-ui/react-icons"
+import { useRef, useState } from "react"
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion"
+import {
+  LightningBoltIcon,
+  TargetIcon,
+  CheckCircledIcon,
+  ClockIcon,
+  PersonIcon,
+  CheckIcon,
+} from "@radix-ui/react-icons"
 import DotPattern from "@/components/ui/dot-pattern"
 
 const benefits = [
@@ -11,174 +17,182 @@ const benefits = [
     icon: LightningBoltIcon,
     title: "Resposta imediata",
     description: "Seus leads sao contatados em minutos, nao em dias. Velocidade e conversao.",
-    color: "from-yellow-400/20 to-orange-500/10",
+    accent: "from-yellow-300/[0.18] via-orange-300/[0.1] to-transparent",
   },
   {
     icon: TargetIcon,
     title: "Foco em conversao",
     description: "Nao somos agencia de branding. Entramos para bater meta e vender.",
-    color: "from-blue-400/20 to-indigo-500/10",
+    accent: "from-sky-300/[0.18] via-blue-300/[0.1] to-transparent",
   },
   {
     icon: CheckCircledIcon,
     title: "Zero risco",
     description: "Voce so paga por resultado real. So ganhamos quando voce ganha.",
-    color: "from-emerald-400/20 to-teal-500/10",
+    accent: "from-emerald-300/[0.18] via-teal-300/[0.1] to-transparent",
   },
   {
     icon: ClockIcon,
     title: "Processo 24/7",
     description: "Automacao e processos que nao param. Sua empresa vendendo enquanto voce dorme.",
-    color: "from-purple-400/20 to-pink-500/10",
+    accent: "from-fuchsia-300/[0.18] via-pink-300/[0.1] to-transparent",
   },
   {
     icon: PersonIcon,
     title: "Time dedicado",
     description: "Especialistas treinados no seu produto focados em fechamento constante.",
-    color: "from-rose-400/20 to-red-500/10",
+    accent: "from-rose-300/[0.18] via-red-300/[0.1] to-transparent",
   },
   {
     icon: CheckIcon,
     title: "Transparencia",
     description: "Acompanhe tudo em tempo real. Cada lead, cada tentativa e cada venda feita.",
-    color: "from-cyan-400/20 to-blue-500/10",
+    accent: "from-cyan-300/[0.18] via-blue-300/[0.1] to-transparent",
   },
 ]
 
+const transition = {
+  duration: 0.42,
+  ease: [0.22, 1, 0.36, 1] as const,
+}
+
 export function Benefits() {
   const containerRef = useRef<HTMLDivElement>(null)
-  
+  const stageRef = useRef(0)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [showStats, setShowStats] = useState(false)
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   })
 
-  const total = benefits.length
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const safeProgress = Math.min(Math.max(latest, 0), 0.999999)
+    const totalStages = benefits.length + 1
+    const nextStage = Math.min(totalStages - 1, Math.floor(safeProgress * totalStages))
+
+    if (nextStage !== stageRef.current) {
+      stageRef.current = nextStage
+      setShowStats(nextStage === benefits.length)
+      setActiveIndex(Math.min(nextStage, benefits.length - 1))
+    }
+  })
+
+  const activeBenefit = benefits[activeIndex]
 
   return (
-    <div ref={containerRef} className="relative h-[600vh] w-full bg-transparent">
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-10 md:pt-0 px-4 overflow-hidden">
-        
-        {/* Header - Fades out as we scroll deep into cards */}
-        <motion.div 
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]) }}
-          className="absolute top-16 md:top-24 text-center z-10 px-4"
-        >
-          <p className="text-sm uppercase tracking-[0.4em] text-gray-500 font-sans font-bold mb-4">
-            Por que escolher a AJAX
-          </p>
-          <h2 className="text-4xl md:text-7xl font-sans font-bold text-white tracking-tighter">
-            O que você ganha
-          </h2>
-        </motion.div>
+    <div ref={containerRef} className="relative h-[520vh] w-full bg-transparent">
+      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden px-4 py-10">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 md:gap-10">
+          <div className="text-center">
+            <p className="mb-4 text-sm font-sans font-bold uppercase tracking-[0.35em] text-gray-500">
+              Por que escolher a AJAX
+            </p>
+            <h2 className="text-4xl font-sans font-bold tracking-tighter text-white md:text-7xl">
+              O que voce ganha
+            </h2>
+          </div>
 
-        {/* Cards Stack */}
-        <div className="relative w-full max-w-4xl h-[500px] flex items-center justify-center">
-          {benefits.map((benefit, index) => {
-            const stepSize = 1 / total
-            const start = index * stepSize
-            const end = (index + 1) * stepSize
-            
-            // Entrada: Vem "bagunçado" (zoom + rotate + offset) e centraliza
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const scale = useTransform(
-              scrollYProgress,
-              [start, start + stepSize * 0.4],
-              [0.5, 1],
-              { clamp: true }
-            )
+          <div className="mx-auto grid w-full max-w-4xl grid-cols-3 gap-2 rounded-[28px] border border-white/10 bg-white/[0.04] p-2 backdrop-blur-sm md:grid-cols-6">
+            {benefits.map((benefit, index) => {
+              const isActive = index === activeIndex && !showStats
 
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const y = useTransform(
-              scrollYProgress,
-              [start, start + stepSize * 0.4],
-              [index % 2 === 0 ? "60vh" : "-60vh", "0vh"],
-              { clamp: true }
-            )
-
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const rotate = useTransform(
-              scrollYProgress,
-              [start, start + stepSize * 0.4],
-              [index % 2 === 0 ? 15 : -15, 0],
-              { clamp: true }
-            )
-
-            // Saída: Some para dar espaço ao próximo
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const exitOpacity = useTransform(
-              scrollYProgress,
-              [end - stepSize * 0.1, end],
-              [1, 0],
-              { clamp: true }
-            )
-
-            // Ativo apenas na sua fatia de leitura (Dwell Time)
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const opacity = useTransform(
-              scrollYProgress,
-              [start, start + stepSize * 0.1, end - stepSize * 0.1, end],
-              [0, 1, 1, 0],
-              { clamp: true }
-            )
-
-            return (
-              <motion.div
-                key={index}
-                style={{ 
-                  scale, 
-                  y, 
-                  rotate, 
-                  opacity,
-                  zIndex: index 
-                }}
-                className="absolute w-full max-w-xl aspect-[4/3] md:aspect-video flex items-center justify-center p-1"
-              >
-                <div className="relative w-full h-full p-8 md:p-12 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center text-center overflow-hidden group">
-                  <DotPattern width={8} height={8} className="opacity-5" />
-
-                  {/* Discrete Radix Background Icon */}
-                  <benefit.icon className="absolute -bottom-6 -right-6 w-48 h-48 text-white opacity-[0.02] pointer-events-none group-hover:scale-105 transition-transform duration-[3s]" />
-
-                  <div className="relative z-10">
-                    <h3 className="text-2xl md:text-5xl font-sans font-bold text-white mb-4 md:mb-6 tracking-tight">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-gray-400 font-sans font-normal text-base md:text-2xl leading-relaxed max-w-md mx-auto">
-                      {benefit.description}
-                    </p>
-                  </div>
+              return (
+                <div
+                  key={benefit.title}
+                  className={`flex items-center justify-center rounded-[18px] px-3 py-3 text-center transition-all duration-300 ${
+                    isActive ? "bg-white text-[#09132f] shadow-[0_8px_28px_rgba(255,255,255,0.18)]" : "text-white/60"
+                  }`}
+                >
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-[0.24em] md:text-[11px]">
+                    {benefit.title}
+                  </span>
                 </div>
-              </motion.div>
-            )
-          })}
+              )
+            })}
+          </div>
+
+          <div className="relative mx-auto flex min-h-[360px] w-full max-w-4xl items-center md:min-h-[430px]">
+            <AnimatePresence mode="wait" initial={false}>
+              {showStats ? (
+                <motion.div
+                  key="benefits-stats"
+                  initial={{ opacity: 0, y: 28, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -18, scale: 0.98 }}
+                  transition={transition}
+                  className="w-full"
+                >
+                  <div className="relative overflow-hidden rounded-[34px] border border-white/12 bg-[linear-gradient(180deg,rgba(11,18,48,0.96),rgba(7,11,31,0.95))] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-12">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_36%)]" />
+                    <DotPattern width={8} height={8} className="opacity-[0.05]" />
+
+                    <div className="relative z-10">
+                      <p className="mb-4 text-center text-sm font-sans font-bold uppercase tracking-[0.32em] text-white/60">
+                        Resultado da operacao
+                      </p>
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <StatItem value="+R$2.4M" label="Recuperados" />
+                        <StatItem value="47%" label="Conversao" />
+                        <StatItem value="24/7" label="Operacao" />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={activeBenefit.title}
+                  initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -22, scale: 0.98 }}
+                  transition={transition}
+                  className="w-full"
+                >
+                  <div className="relative overflow-hidden rounded-[34px] border border-white/12 bg-[linear-gradient(180deg,rgba(11,18,48,0.96),rgba(7,11,31,0.95))] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-12">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${activeBenefit.accent}`} />
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),transparent_38%,transparent)]" />
+                    <DotPattern width={8} height={8} className="opacity-[0.05]" />
+
+                    <div className="absolute right-6 top-5 text-[72px] font-sans font-bold leading-none text-white/[0.06] md:right-8 md:top-6 md:text-[128px]">
+                      {String(activeIndex + 1).padStart(2, "0")}
+                    </div>
+
+                    <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:gap-10">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] shadow-[inset_0_0_24px_rgba(255,255,255,0.08)] md:h-20 md:w-20">
+                        <activeBenefit.icon className="h-9 w-9 text-white md:h-11 md:w-11" />
+                      </div>
+
+                      <div className="max-w-2xl">
+                        <div className="mb-4 inline-flex items-center rounded-full border border-white/14 bg-white/[0.05] px-4 py-2 text-[11px] font-sans font-bold uppercase tracking-[0.32em] text-white/70">
+                          Beneficio {String(activeIndex + 1).padStart(2, "0")}
+                        </div>
+
+                        <h3 className="mb-4 text-3xl font-sans font-bold tracking-tight text-white md:text-5xl">
+                          {activeBenefit.title}
+                        </h3>
+
+                        <p className="text-base leading-relaxed text-gray-200/90 md:text-xl">
+                          {activeBenefit.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-
-        {/* Final Stats Reveal - Only at the absolute end */}
-        <motion.div
-           style={{ 
-              opacity: useTransform(scrollYProgress, [0.95, 1], [0, 1]),
-              y: useTransform(scrollYProgress, [0.95, 1], [50, 0])
-           }}
-           className="absolute bottom-20 w-full max-w-5xl px-4"
-        >
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <StatItem value="+R$2.4M" label="Recuperados" />
-                <StatItem value="47%" label="Conversão" />
-                <StatItem value="24/7" label="Operação" />
-             </div>
-        </motion.div>
-
       </div>
     </div>
   )
 }
 
-function StatItem({ value, label }: { value: string, label: string }) {
-    return (
-        <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl text-center">
-            <p className="text-4xl md:text-6xl font-sans font-bold text-white mb-1">{value}</p>
-            <p className="text-gray-400 text-xs md:text-sm font-sans uppercase tracking-[0.2em] font-bold">{label}</p>
-        </div>
-    )
+function StatItem({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-[28px] border border-white/10 bg-white/[0.05] p-8 text-center backdrop-blur-sm">
+      <p className="mb-2 text-4xl font-sans font-bold text-white md:text-6xl">{value}</p>
+      <p className="text-xs font-sans font-bold uppercase tracking-[0.24em] text-gray-400 md:text-sm">{label}</p>
+    </div>
+  )
 }

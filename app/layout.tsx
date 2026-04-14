@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/react"
 import "./globals.css"
 import { Suspense } from "react"
+import { LegacyWorkerReset } from "@/components/legacy-worker-reset"
 
 import { Open_Sans, Rubik, Instrument_Serif } from 'next/font/google'
 
@@ -44,6 +45,7 @@ export default function RootLayout({
     <html lang="pt-BR" className="bg-background">
       <body className={`font-sans ${openSans.variable} ${rubik.variable} ${instrumentSerif.variable}`}>
         <Suspense fallback={null}>
+          <LegacyWorkerReset />
           {children}
           <Analytics />
         </Suspense>
