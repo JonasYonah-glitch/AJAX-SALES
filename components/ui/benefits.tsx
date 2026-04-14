@@ -85,6 +85,8 @@ function BenefitCard({ benefit, index, total, scrollYProgress }: BenefitCardProp
     { clamp: true }
   )
 
+  const Icon = benefit.icon
+
   return (
     <motion.div
       style={{ 
@@ -98,7 +100,7 @@ function BenefitCard({ benefit, index, total, scrollYProgress }: BenefitCardProp
     >
       <div className="relative w-full h-full p-8 md:p-12 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center text-center overflow-hidden group">
         <DotPattern width={8} height={8} className="opacity-5" />
-        <benefit.icon className="absolute -bottom-12 -right-12 w-64 h-64 text-white opacity-[0.02] pointer-events-none group-hover:scale-110 transition-transform duration-[3s]" />
+        <Icon className="absolute -bottom-12 -right-12 w-64 h-64 text-white opacity-[0.02] pointer-events-none group-hover:scale-110 transition-transform duration-[3s]" />
 
         <div className="relative z-10">
           <h3 className="text-3xl md:text-5xl font-sans font-bold text-white mb-6 tracking-tight">

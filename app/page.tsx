@@ -48,7 +48,7 @@ export default function Home() {
     <main className="relative min-h-screen">
       <InteractiveNeuralVortexBackground />
 
-      <div className="fixed inset-0 z-[-1] bg-black/50 pointer-events-none" />
+      <div className="fixed inset-0 z-[-11] bg-black/50 pointer-events-none" />
 
       <FloatingNavbar />
 

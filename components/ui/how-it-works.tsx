@@ -67,6 +67,8 @@ function StepCard({ step, index, total, scrollYProgress }: StepCardProps) {
     { clamp: true }
   )
 
+  const Icon = step.icon
+
   return (
     <motion.div
       style={{ y, scale, opacity, zIndex: index }}
@@ -79,7 +81,7 @@ function StepCard({ step, index, total, scrollYProgress }: StepCardProps) {
         </div>
         
         <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]">
-          <step.icon className="w-8 h-8 md:w-10 md:h-10 text-gray-200" />
+          <Icon className="w-8 h-8 md:w-10 md:h-10 text-gray-200" />
         </div>
         
         <div className="relative z-10 text-center md:text-left">

@@ -193,7 +193,7 @@ export function InteractiveNeuralVortexBackground() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 w-full h-full pointer-events-none opacity-90 z-0 bg-[#00042e]"
+      className="fixed inset-0 w-full h-full pointer-events-none opacity-90 z-[-10] bg-[#00042e]"
     />
   );
 }
