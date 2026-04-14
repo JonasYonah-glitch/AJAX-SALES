@@ -29,10 +29,10 @@ export default function PricingPage() {
         <div className="mx-auto w-full max-w-5xl">
           {/* Heading */}
           <div className="mx-auto mb-10 max-w-2xl text-center">
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)] font-open-sans-custom">
+            <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl text-white [text-shadow:_0_4px_20px_rgb(0_0_0_/_60%)] font-sans">
               Plans and Pricing
             </h1>
-            <p className="text-gray-300 mt-4 text-sm md:text-base font-open-sans-custom [text-shadow:_0_2px_10px_rgb(0_0_0_/_50%)]">
+            <p className="text-gray-300 mt-4 text-sm md:text-base font-sans [text-shadow:_0_2px_10px_rgb(0_0_0_/_50%)]">
               Choose the perfect plan for your needs. From individual creators to enterprise teams, we have flexible
               pricing options to help you succeed.
             </p>
